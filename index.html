@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zona Oculta - Acesso VIP</title>
+  <meta name="description" content="Grupo VIP exclusivo com conteúdo premium e atualizações diárias.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      min-height:100vh;
+      background:url('images/bg-hero-s1.jpg') center/cover no-repeat fixed;
+      font-family:'Montserrat',sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#f1f1f1;
+      padding:15px;
+    }
+    main{
+      text-align:center;
+      max-width:420px;
+      width:100%;
+      background:rgba(0,0,0,0.82);
+      border-radius:18px;
+      padding:26px 18px;
+      box-shadow:0 0 40px rgba(0,0,0,0.9);
+      backdrop-filter:blur(6px);
+    }
+    .banner-img,.tutorial-img{
+      width:100%;
+      max-width:380px;
+      border-radius:14px;
+      margin:14px auto;
+      display:block;
+      box-shadow:0 10px 30px rgba(0,0,0,0.7);
+      border:2px solid rgba(255,0,0,0.5);
+    }
+    .main-text{
+      font-size:19px;
+      font-weight:800;
+      text-shadow:0 0 8px #000;
+      line-height:1.4;
+      margin:22px 0 30px;
+      padding:0 10px;
+    }
+    .btn-telegram{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      background:#e01e1e;
+      color:#fff;
+      font-weight:800;
+      font-size:18px;
+      padding:16px 24px;
+      border-radius:50px;
+      text-decoration:none;
+      margin:0 auto 14px;
+      width:90%;
+      max-width:360px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.6);
+      animation:pulse-red 1.8s infinite;
+      transition:all .3s;
+    }
+    .btn-telegram:hover{
+      background:#c11b1b;
+      transform:scale(1.04);
+    }
+    .btn-telegram img{width:28px;height:28px;}
+    @keyframes pulse-red{
+      0%{box-shadow:0 0 0 0 rgba(224,30,30,0.7);}
+      70%{box-shadow:0 0 0 16px rgba(224,30,30,0);}
+      100%{box-shadow:0 0 0 0 rgba(224,30,30,0);}
+    }
+    .marca{
+      margin-top:28px;
+      color:#e01e1e;
+      font-size:28px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:3px;
+      text-shadow:0 0 12px #e01e1e;
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <img src="banner.jpg" alt="Banner VIP" class="banner-img">
+    <img src="foto.jpg" alt="Tutorial de acesso" class="tutorial-img">
+
+    <div class="main-text">
+      O MELHOR GRUPO VIP DO BRASIL ESTÁ A UM CLIQUE DE VOCÊ.
+    </div>
+
+    <!-- 🔥 SEU LINK DO BOT (JÁ ESTÁ OK) -->
+    <a id="btn-telegram" href="https://apextry.com/go/zobm2" class="btn-telegram" target="_blank">
+      <img src="images/Telegram_logo.svg" alt="Telegram">
+      ENTRAR NO GRUPO AGORA
+    </a>
+
+    <div class="marca">ZONA OCULTA</div>
+  </main>
+
+<!-- ✅ NETLIFY FUNCTION (AGORA LOCAL, SEM CORS) -->
+<script>
+  const ENDPOINT = "/.netlify/functions/tiktok-event";
+  const PRICE = 18.00;
+  const CONTENT_ID = "ZONA_OCULTA_VIP_002";
+
+  function generateEventId(name) {
+    return `${name}_${Date.now()}_${Math.random().toString(36).substr(2,8)}`;
+  }
+
+  async function sendEvent(eventName, extra = {}) {
+    try {
+      await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: eventName,
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: generateEventId(eventName),
+          context: {
+            page: {
+              url: window.location.href
+            }
+          },
+          properties: {
+            value: PRICE,
+            currency: "BRL",
+            content_id: CONTENT_ID,
+            content_name: "Acesso VIP - Zona Oculta",
+            ...extra
+          }
+        })
+      });
+    } catch (e) {
+      console.log("Erro ao enviar:", e.message);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const btn = document.getElementById("btn-telegram");
+
+    // ✅ ViewContent (quando abre a página)
+    if (!sessionStorage.getItem("view_sent")) {
+      sendEvent("ViewContent");
+      sessionStorage.setItem("view_sent", "1");
+    }
+
+    // ✅ InitiateCheckout (quando clica)
+    if (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        sendEvent("InitiateCheckout");
+
+        setTimeout(() => {
+          window.location.href = btn.href;
+        }, 300);
+      });
+    }
+
+  });
+</script>
+
+</body>
+</html>
