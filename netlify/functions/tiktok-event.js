@@ -36,7 +36,7 @@ exports.handler = async (event) => {
         "Content-Type": "application/json",
 
         // ❗ COLE SEU NOVO TOKEN AQUI (revogue o antigo!)
-        "Access-Token": "COLE_NOVO_TOKEN_AQUI"
+        "Access-Token": "0322d0268e31b9d59d2690d697389a2aa704d681"
       },
       body: JSON.stringify(data)
     });
