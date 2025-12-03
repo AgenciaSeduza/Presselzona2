@@ -71,7 +71,10 @@
       background:#c11b1b;
       transform:scale(1.04);
     }
-    .btn-telegram img{width:28px;height:28px;}
+    .btn-telegram img{
+      width:28px;
+      height:28px;
+    }
     @keyframes pulse-red{
       0%{box-shadow:0 0 0 0 rgba(224,30,30,0.7);}
       70%{box-shadow:0 0 0 16px rgba(224,30,30,0);}
@@ -98,7 +101,6 @@
       O MELHOR GRUPO VIP DO BRASIL ESTÁ A UM CLIQUE DE VOCÊ.
     </div>
 
-    <!-- 🔥 SEU LINK DO BOT (JÁ ESTÁ OK) -->
     <a id="btn-telegram" href="https://apextry.com/go/zobm2" class="btn-telegram" target="_blank">
       <img src="images/Telegram_logo.svg" alt="Telegram">
       ENTRAR NO GRUPO AGORA
@@ -107,41 +109,52 @@
     <div class="marca">ZONA OCULTA</div>
   </main>
 
-<!-- ✅ NETLIFY FUNCTION (AGORA LOCAL, SEM CORS) -->
 <script>
-  const ENDPOINT = "/.netlify/functions/tiktok-event";
-  const PRICE = 18.00;
+  const ENDPOINT   = "/.netlify/functions/tiktok-event";
+  const PRICE      = 18.00;
   const CONTENT_ID = "ZONA_OCULTA_VIP_002";
 
   function generateEventId(name) {
-    return `${name}_${Date.now()}_${Math.random().toString(36).substr(2,8)}`;
+    return `${name}_${Date.now()}_${Math.random().toString(36).substring(2,9)}`;
   }
 
-  async function sendEvent(eventName, extra = {}) {
+  async function sendEvent(eventName, extraProps = {}) {
     try {
-      await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event: eventName,
-          event_time: Math.floor(Date.now() / 1000),
-          event_id: generateEventId(eventName),
-          context: {
-            page: {
-              url: window.location.href
-            }
-          },
-          properties: {
-            value: PRICE,
-            currency: "BRL",
-            content_id: CONTENT_ID,
-            content_name: "Acesso VIP - Zona Oculta",
-            ...extra
+      const payload = {
+        event: eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: generateEventId(eventName),
+
+        context: {
+          user_agent: navigator.userAgent,
+          page: {
+            url: window.location.href
           }
-        })
+        },
+
+        properties: {
+          currency: "BRL",
+          value: PRICE,
+          content_type: "product",
+          content_id: CONTENT_ID,
+          content_name: "Acesso VIP - Zona Oculta",
+          ...extraProps
+        }
+      };
+
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
-    } catch (e) {
-      console.log("Erro ao enviar:", e.message);
+
+      const result = await response.json();
+      console.log("✅ Evento enviado:", eventName, result);
+
+    } catch (error) {
+      console.error("❌ Erro ao enviar evento:", error);
     }
   }
 
@@ -149,15 +162,15 @@
 
     const btn = document.getElementById("btn-telegram");
 
-    // ✅ ViewContent (quando abre a página)
+    // ✅ VIEW CONTENT
     if (!sessionStorage.getItem("view_sent")) {
       sendEvent("ViewContent");
       sessionStorage.setItem("view_sent", "1");
     }
 
-    // ✅ InitiateCheckout (quando clica)
+    // ✅ INITIATE CHECKOUT
     if (btn) {
-      btn.addEventListener("click", function (e) {
+      btn.addEventListener("click", function(e) {
         e.preventDefault();
 
         sendEvent("InitiateCheckout");
