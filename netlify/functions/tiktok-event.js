@@ -1,18 +1,8 @@
+const fetch = require("node-fetch");
+
 exports.handler = async (event) => {
-
-  // ✅ Aceita pré-verificação do navegador (CORS)
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS"
-      },
-      body: "OK"
-    };
-  }
-
+  
+  // ✅ Só aceita POST
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -34,8 +24,6 @@ exports.handler = async (event) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-
-        // ❗ COLE SEU NOVO TOKEN AQUI (revogue o antigo!)
         "Access-Token": "0322d0268e31b9d59d2690d697389a2aa704d681"
       },
       body: JSON.stringify(data)
