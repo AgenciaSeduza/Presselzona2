@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+import fetch from "node-fetch";
 
   // ✅ Só aceita POST
   if (event.httpMethod !== "POST") {
