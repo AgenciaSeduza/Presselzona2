@@ -1,8 +1,6 @@
-import fetch from "node-fetch";
+exports.handler = async (event) => {
 
-export const handler = async (event) => {
-
-  // ✅ Só aceita POST
+  // ✅ Aceita pré-verificação do navegador (CORS)
   if (event.httpMethod === "OPTIONS") {
     return {
       statusCode: 200,
@@ -36,8 +34,9 @@ export const handler = async (event) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // ⚠️ TROQUE POR UM NOVO TOKEN
-        "Access-Token": "0322d0268e31b9d59d2690d697389a2aa704d681"
+
+        // ❗ COLE SEU NOVO TOKEN AQUI (revogue o antigo!)
+        "Access-Token": "COLE_NOVO_TOKEN_AQUI"
       },
       body: JSON.stringify(data)
     });
@@ -52,11 +51,6 @@ export const handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
-  }
-};
-
       body: JSON.stringify({ error: error.message })
     };
   }
