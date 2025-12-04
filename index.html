@@ -104,29 +104,56 @@
   </main>
 
 <!-- API EVENTS SERVER-SIDE (SEM SDK) - PIXEL NOVO 2025 -->
+<!-- API EVENTS 100% FUNCIONAL – DEZEMBRO 2025 -->
 <script>
-  const ENDPOINT = "/.netlify/functions/tiktok-event"; // ou o fetch direto se não usar server-to-server
+  const PIXEL_ID = 'D4O8U9JC77UA1JCQ5P30';
+  const ACCESS_TOKEN = '777dff0207ebd8ab566dcd1beb0100fff8c9b2f4';
+  const API_ENDPOINT = 'https://business-api.tiktok.com/open_api/v1.3/event/track/';
   const PRICE = 18.00;
 
-  async function send(e, extra = {}) {
+  async function send(eventName, extra = {}) {
     const payload = {
-      event: e,
-      event_id: e + "_" + Date.now() + Math.random().toString(36).substr(2,9),
-      page_url: location.href,
-      properties: { currency:"BRL", value: PRICE, content_id:"ZONA_OCULTA_VIP_002", ...extra }
+      pixel_code: PIXEL_ID,
+      event: eventName,
+      event_id: eventName + "_" + Date.now() + Math.random().toString(36).substr(2,9),
+      event_source_id: "web",                    // ← obrigatório agora (resolve o 40002)
+      timestamp: new Date().toISOString(),
+      context: {
+        user_agent: navigator.userAgent,
+        page: { url: location.href }
+      },
+      properties: {
+        currency: "BRL",
+        value: PRICE,
+        content_type: "product_group",
+        content_id: "ZONA_OCULTA_VIP_002",
+        content_name: "Acesso VIP - Zona Oculta",
+        ...extra
+      }
     };
-    try { await fetch(ENDPOINT, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)}); }
-    catch(e){}
+
+    try {
+      await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Access-Token": ACCESS_TOKEN,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch(e) {}
   }
 
-  // ViewContent (1x por sessão)
-  if (!sessionStorage.getItem("vc_venda")) {
+  // ViewContent (1× por sessão)
+  if (!sessionStorage.getItem("tt_vc_2025")) {
     send("ViewContent");
-    sessionStorage.setItem("vc_venda", "1");
+    sessionStorage.setItem("tt_vc_2025", "1");
   }
 
-  // InitiateCheckout no clique do botão
-  document.getElementById("btn-telegram")?.addEventListener("click", () => send("InitiateCheckout"));
+  // InitiateCheckout no clique
+  document.getElementById("btn-telegram")?.addEventListener("click", () => {
+    send("InitiateCheckout");
+  });
 </script>
 </body>
 </html>
