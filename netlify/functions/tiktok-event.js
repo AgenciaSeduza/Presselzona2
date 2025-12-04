@@ -1,20 +1,19 @@
 exports.handler = async (event) => {
   const data = JSON.parse(event.body);
 
-  const PIXEL_ID = "D4O8MMJC77UDQ79J0IL0";
-  const ACCESS_TOKEN = "777dff0207ebd8ab566dcd1beb0100fff8c9b2f4";
+  const PIXEL_ID = "D4O8U9JC77UA1JCQ5P30";
+  const ACCESS_TOKEN = "df349851296e7145f67406e2558c06c72b4ad2e9";
 
   const payload = {
     pixel_code: PIXEL_ID,
     event: data.event,
-    event_id: data.event_id,
+    event_id: data.event_id || data.event + "_" + Date.now(),
     timestamp: new Date().toISOString(),
     context: {
       user_agent: event.headers["user-agent"],
-      ip: event.headers["x-nf-client-ip"]  event.headers["x-forwarded-for"],
-      page: { url: data.page_url }
+      page: { url: data.page_url || event.headers.referer }
     },
-    properties: data.properties  {}
+    properties: data.properties || {}
   };
 
   try {
@@ -26,7 +25,6 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify(payload)
     });
-
     const result = await res.json();
     return { statusCode: 200, body: JSON.stringify(result) };
   } catch (err) {
